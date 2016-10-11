@@ -1,0 +1,2 @@
+-- Listing 3-14. The SDO_DIM_ARRAY Structure
+DESCRIBE SDO_DIM_ARRAY;

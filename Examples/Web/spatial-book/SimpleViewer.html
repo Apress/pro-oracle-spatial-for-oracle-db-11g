@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Oracle Spatial - Map embedding in HTML</title>
+  <link rel="stylesheet" href="my.css" type="text/css">
+</head>
+<body>
+<h1>Oracle Spatial - Map embedding in HTML</h1>
+This illustrates how to embed a simple map in an HTML page using the <b>&lt;image&gt;</b> tag. See below for how this is done.
+<p>
+<image
+  border="1"
+  name="mapImage"
+  src="http://127.0.0.1:8888/mapviewer/omserver?xml_request=&lt;?xml version=&quot;1.0&quot; standalone=&quot;yes&quot; ?&gt; &lt;map_request title=&quot;Embedded Map&quot; basemap=&quot;world_map&quot; datasource=&quot;spatial&quot; width=&quot;480&quot; height=&quot;400&quot; format=&quot;GIF_STREAM&quot; &gt; &lt;center size=&quot;30&quot;&gt; &lt;geoFeature&gt; &lt;geometricProperty typeName=&quot;center&quot;&gt; &lt;Point&gt; &lt;coordinates&gt; 0, 0 &lt;/coordinates&gt; &lt;/Point&gt; &lt;/geometricProperty&gt; &lt;/geoFeature&gt; &lt;/center&gt; &lt;/map_request&gt;"
+  alt="Map Image" >
+<p>
+The <b>src</b> parameter of the <b>&lt;image&gt;</b> tag must be set to point to the URL of the mapviewer server, with the <b>xml_request</b> parameter set to the XML that describes the map request. The format of the map can be set to GIF_STREAM or PNG_STREAM: those formats tell the mapviewer server to stream a GIF or PNG image directly to the requester.
+<p>
+The complete image tag appears in the text box below. Note that it is necessary to escape all special characters from the XML stream. This includes the &lt; and &gt; characters, as well as the quotes (&quot;). The actual tag, as written in the HTML page (with all special characters escaped) appears in the second text box.
+<p>
+<table>
+  <tr>
+    <td valign=top>
+<textarea cols=55 rows=15><image
+  border="1"
+  name="mapImage"
+  src="http://127.0.0.1:8888/mapviewer/omserver?xml_request=&lt;?xml version=&quot;1.0&quot; standalone=&quot;yes&quot; ?&gt; &lt;map_request title=&quot;Embedded Map&quot; basemap=&quot;world_map&quot; datasource=&quot;spatial&quot; width=&quot;480&quot; height=&quot;400&quot; format=&quot;GIF_STREAM&quot; &gt; &lt;center size=&quot;30&quot;&gt; &lt;geoFeature&gt; &lt;geometricProperty typeName=&quot;center&quot;&gt; &lt;Point&gt; &lt;coordinates&gt; 0, 0 &lt;/coordinates&gt; &lt;/Point&gt; &lt;/geometricProperty&gt; &lt;/geoFeature&gt; &lt;/center&gt; &lt;/map_request&gt;"
+  alt="Map Image" >
+</textarea>
+      </td>
+      <td>
+<textarea cols=55 rows=15><image
+  border="1"
+  name="mapImage"
+  src="http://127.0.0.1:8888/mapviewer/omserver?xml_request=&amp;lt;?xml version=&amp;quot;1.0&amp;quot; standalone=&amp;quot;yes&amp;quot; ?&amp;gt; &amp;lt;map_request title=&amp;quot;Embedded Map&amp;quot; basemap=&amp;quot;world_map&amp;quot; datasource=&amp;quot;spatial&amp;quot; width=&amp;quot;480&amp;quot; height=&amp;quot;400&amp;quot; format=&amp;quot;GIF_STREAM&amp;quot; &amp;gt; &amp;lt;center size=&amp;quot;30&amp;quot;&amp;gt; &amp;lt;geoFeature&amp;gt; &amp;lt;geometricProperty typeName=&amp;quot;center&amp;quot;&amp;gt; &amp;lt;Point&amp;gt; &amp;lt;coordinates&amp;gt; 0, 0 &amp;lt;/coordinates&amp;gt; &amp;lt;/Point&amp;gt; &amp;lt;/geometricProperty&amp;gt; &amp;lt;/geoFeature&amp;gt; &amp;lt;/center&amp;gt; &amp;lt;/map_request&amp;gt;"
+  alt="Map Image" >
+  </textarea>
+      </td>
+    </tr>
+  </table>
+<p>
+The actual XML request sent to the server (reformated for clarity appears below)
+<p>
+<textarea cols=80 rows=15><?xml version="1.0" standalone="yes" ?>
+<map_request
+   basemap="world_map"
+   datasource="spatial"
+   width="480"
+   height="400"
+   format="GIF_STREAM" >
+  <center size="30">
+    <geoFeature>
+      <geometricProperty typeName="center">
+        <Point>
+          <coordinates>
+            0, 0
+          </coordinates>
+        </Point>
+      </geometricProperty>
+    </geoFeature>
+  </center>
+</map_request>
+</textarea>
+</body>
+</html>

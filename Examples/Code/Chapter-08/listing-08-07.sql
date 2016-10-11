@@ -1,0 +1,3 @@
+-- Listing 8-7. Identifying the SDO_INDEX_TABLE That Stores the Spatial Index on the customers Table
+SELECT SDO_INDEX_TABLE FROM USER_SDO_INDEX_INFO
+WHERE TABLE_NAME = 'CUSTOMERS' AND COLUMN_NAME='LOCATION';

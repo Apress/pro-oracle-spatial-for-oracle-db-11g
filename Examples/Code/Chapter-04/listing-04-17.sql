@@ -1,0 +1,2 @@
+-- Listing 4-17. SDO_POINT_TYPE Data Type
+DESCRIBE SDO_POINT_TYPE;

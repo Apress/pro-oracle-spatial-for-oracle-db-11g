@@ -1,0 +1,10 @@
+-- Listing D-19. Creating a Dynamic Theme for GeoRaster Objects
+<theme name="georaster_theme" >
+<jdbc_georaster_query
+georaster_table="branches"
+georaster_column="georaster"
+jdbc_srid="8307"
+datasource="mvdemo"
+asis="false"> SELECT georaster FROM branches WHERE id =1
+</jdbc_georaster_query>
+</theme>

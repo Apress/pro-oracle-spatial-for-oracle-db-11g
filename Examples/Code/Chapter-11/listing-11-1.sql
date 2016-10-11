@@ -1,0 +1,9 @@
+-- Listing 11-1. Loading the Routing Data
+imp spatial/spatial file=routing.dmp full=y
+
+DROP TABLE EDGE;
+DROP TABLE NODE;
+DROP TABLE SIGN_POST;
+RENAME ROUTE_EDGES_SF TO EDGE;
+RENAME ROUTE_NODES_SF TO NODE;
+RENAME ROUTE_SIGN_POSTS_SF TO SIGN_POST;

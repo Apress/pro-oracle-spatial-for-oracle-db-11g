@@ -1,0 +1,2 @@
+-- Listing D-2. Structure of SDO_GEORASTER
+DESC SDO_GEORASTER;

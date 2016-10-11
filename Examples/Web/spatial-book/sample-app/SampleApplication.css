@@ -1,0 +1,34 @@
+body {
+  font-family: Verdana, Helvetica, Arial, sans-serif;;
+  font-size: 80%;
+}
+
+#PANEL_CONTROL {
+  width:  180px;
+  height: 550px;
+  padding-left: 5px;
+}
+#PANEL_MAP {
+  width:  600px;
+  height: 500px;
+  border: 1px solid black;
+}
+#PANEL_STATUS {
+  width:  600px;
+  height: 40px;
+  color:  red;
+}
+#PANEL_SEARCH_CONTROL {
+  visibility: hidden
+  width:  600px;
+  height: 20px;
+}
+#PANEL_INFO {
+  overflow: auto;
+  clip: rect(auto, auto, auto, auto);
+  padding-left: 5px;
+  width:  500px;
+  height: 480px;
+  border: 1px solid black;
+}
+

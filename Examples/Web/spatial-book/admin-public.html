@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Mapviewer administration</title>
+  <link rel="stylesheet" href="my.css" type="text/css">
+</head>
+<body>
+<h1>Mapviewer administration API</h1>
+
+<HR>
+<TABLE cellpadding="5" cellspacing="3" border="0" summary="">
+<TR>
+  <TD> <A HREF="#mgr_datasource">datasources</A></TD>
+  <TD> <A HREF="#mgr_map">maps</A></TD>
+  <TD> <A HREF="#mgr_theme">themes</A></TD>
+  <TD> <A HREF="#mgr_style">styles</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<A NAME="mgr_datasource">
+<H2>Data Sources </H2>
+
+<H3>List data sources:</H3>
+<FORM action=/mapviewer/omserver method=post>
+<TEXTAREA cols=70 name=xml_request rows=5>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;list_data_sources /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Data source exists:</H3>
+<FORM action=/mapviewer/omserver method=post>
+<TEXTAREA cols=70 name=xml_request rows=5>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;data_source_exists data_source="spatial"/&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="mgr_map">
+<H2>Maps </H2></FONT>
+
+
+<H3> List all the maps defined in a data source:</H3>
+<FORM action=/mapviewer/omserver method=post>
+<TEXTAREA cols=70 name=xml_request rows=5>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;list_maps data_source="spatial" /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<A NAME="mgr_theme">
+<HR>
+<H2>Themes </H2></FONT>
+
+
+<H3> List all the themes in a data source:</H3>
+<FORM action=/mapviewer/omserver method=post>
+<TEXTAREA cols=70 name=xml_request rows=5>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;list_predefined_themes data_source="spatial" /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3> List all the themes in a data source that are part of a map:</H3>
+<FORM action=/mapviewer/omserver method=post>
+<TEXTAREA cols=70 name=xml_request rows=5>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;list_predefined_themes data_source="spatial" map="US_BASE_MAP" /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="mgr_style">
+<H2>Styles </H2></FONT>
+
+
+<H3>List styles:</H3>
+<FORM action=/mapviewer/omserver method=post>
+<TEXTAREA cols=70 name=xml_request rows=5>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;list_styles data_source="spatial" style_type="COLOR" /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<TABLE cellpadding="5" cellspacing="3" border="0" summary="">
+<TR>
+  <TD> <A HREF="#mgr_datasource">datasources</A></TD>
+  <TD> <A HREF="#mgr_map">maps</A></TD>
+  <TD> <A HREF="#mgr_theme">themes</A></TD>
+  <TD> <A HREF="#mgr_style">styles</A></TD>
+</TR>
+</TABLE>
+<HR>
+</BODY>
+</HTML>

@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>XML requests for figures</title>
+  <link rel="stylesheet" href="my.css" type="text/css">
+</head>
+<body>
+<h1>XML requests for figures</h1>
+
+<HR>
+
+<H3>Figure 2-3. Sample map with multiple themes generated using MapViewer</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=26 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="STATES.US_STATES"  /&gt;
+    &lt;theme name="COUNTIES.US_COUNTIES" /&gt;
+    &lt;theme name="RIVERS.US_RIVERS" /&gt;
+    &lt;theme name="PARKS.US_PARKS"  /&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES" /&gt;
+    &lt;theme name="CITIES.US_CITIES" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Figure 12-1: A map showing the position of our branches</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=30 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_CITY_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="0.02"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-122.40, 37.79&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="M.CYAN PIN"
+         jdbc_srid="8307"&gt;
+           select * from branches
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Figure 12-2: A map showing the position of our branches and those of our competitors</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=41 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_CITY_MAP_FINE"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="0.02"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-122.40, 37.79&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="Competitors"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="M.BUSINESS RED SQUARE"
+         label_column="NAME"
+         label_style="T.BUSINESS NAME RED"
+         jdbc_srid="8307"&gt;
+           select * from competitors
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+    &lt;theme name="Branches"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="M.CYAN PIN"
+         jdbc_srid="8307"&gt;
+           select * from branches
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Figure 12-19: Map with and without styling</H3>
+<h4>12-19 (a) Map without styling</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=42 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  bgcolor="#ffffff"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="STATES.US_STATES"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="GEOM"
+         render_style="C.NO-COLOR"
+         jdbc_srid="8307"&gt;
+           select * from us_states
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+    &lt;theme name="COUNTIES.US_COUNTIES"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="GEOM"
+         render_style="C.NO-COLOR"
+         jdbc_srid="8307"&gt;
+           select * from us_counties
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+    &lt;theme name="RIVERS.US_RIVERS"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="GEOM"
+         render_style="C.NO-COLOR"
+         jdbc_srid="8307"&gt;
+           select * from us_rivers
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+    &lt;theme name="PARKS.US_PARKS"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="GEOM"
+         render_style="C.NO-COLOR"
+         jdbc_srid="8307"&gt;
+           select * from us_parks
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;;
+    &lt;theme name="INTERSTATES.US_INTERSTATES"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="GEOM"
+         render_style="C.NO-COLOR"
+         jdbc_srid="8307"&gt;
+           select * from us_interstates
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+    &lt;theme name="CITIES.US_CITIES"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="C.NO-COLOR"
+         jdbc_srid="8307"&gt;
+           select * from us_cities
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<h4>12-19 (b) Map with styling</h4>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="STATES.US_STATES"  /&gt;
+    &lt;theme name="COUNTIES.US_COUNTIES" /&gt;
+    &lt;theme name="RIVERS.US_RIVERS" /&gt;
+    &lt;theme name="PARKS.US_PARKS"  /&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES" /&gt;
+    &lt;theme name="CITIES.US_CITIES" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Figure 12-30: Map with multiple themes</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=26 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="STATES.US_STATES"  /&gt;
+    &lt;theme name="COUNTIES.US_COUNTIES" /&gt;
+    &lt;theme name="RIVERS.US_RIVERS" /&gt;
+    &lt;theme name="PARKS.US_PARKS"  /&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES" /&gt;
+    &lt;theme name="CITIES.US_CITIES" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Figure 12-30: Individual themes</H3>
+<h4>12-30 (a) Cities theme</h4>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=22 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  bgcolor="#eeeeee"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="CITIES.US_CITIES" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<h4>12-30 (b) Interstates theme</h4>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=22 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  bgcolor="#eeeeee"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<h4>12-30 (c) Parks theme</h4>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=22 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  bgcolor="#eeeeee"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="PARKS.US_PARKS"  /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<h4>12-30 (d) Rivers theme</h4>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=22 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  bgcolor="#eeeeee"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="RIVERS.US_RIVERS" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<h4>12-30 (e) Counties theme</h4>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=22 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  bgcolor="#eeeeee"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="COUNTIES.US_COUNTIES" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<h4>12-30 (f) States theme</h4>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=22 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  bgcolor="#eeeeee"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="STATES.US_STATES"  /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Figure 12-41: Thematic map</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=23 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-80.575,37.6525&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="COUNTIES.US_COUNTIES_POP_DENSITY" /&gt;
+    &lt;theme name="STATES.US_STATE_LINES"  /&gt;
+    &lt;theme name="CITIES.US_CITIES" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+</BODY>
+</HTML>

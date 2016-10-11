@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Map with Business Information</title>
+<link rel="stylesheet" href="ajax-app.css" type="text/css">
+<script language="Javascript" src="/mapviewer/fsmc/jslib/oraclemaps.js"></script>
+<script language="JavaScript">
+  var mapview;
+  var baseURL       =  "http://"+document.location.host+"/mapviewer";
+  var mapSRID       = 8307;
+  var mapCenterX    = -122.40;
+  var mapCenterY    = 37.79;
+  var mapZoom       = 16;
+  var overviewZoom  = 7;
+  var circleTool;
+  var rectangleTool;
+  var redlineTool;
+  var selected_customers;
+  var customers;
+
+  // Zoom levels for theme visibility
+  var minVisibleZoomLevel     = 13;
+  var maxWholeImageLevel      = 15;
+  var minClickableZoomLevel   = 16;
+
+  function loadMainMap()
+  {
+
+    // Create an MVMapView instance to display the map
+    mapview = new MVMapView(document.getElementById("DIV_MAP"), baseURL);
+
+    // Add a base map layer as background.
+    var basemap = new MVBaseMap("spatial.us_city_map");
+    mapview.addBaseMapLayer(basemap);
+
+    // Set the initial map center and zoom level
+    var center=MVSdoGeometry.createPoint(mapCenterX, mapCenterY, mapSRID);
+    mapview.setCenter(center);
+    mapview.setZoomLevel(mapZoom);
+
+    // Add a navigation panel on the left side of the map
+    mapview.setHomeMap(center, mapZoom);
+    mapview.addNavigationPanel("east");
+
+   // Add a scale bar
+    mapview.addScaleBar();
+
+    // Add a copyright notice
+    mapview.addCopyRightNote("Powered by Oracle");
+
+    // Add a marquee zoom control
+    var toolBar =
+      '<div style="background-color:white; border:2px solid black;">'+
+      '&nbsp<b>Marquee Zoom:&nbsp</b>'+
+      '<input id="marqueezoom" type="checkbox" value="marqueezoom" onclick="toggleMarqueeZoom()" unchecked/>'+
+      '</div>'
+    md = new MVMapDecoration(toolBar, 0, 0) ;
+    mapview.addMapDecoration(md);
+
+    // Setup an overview map as a collapsible decoration and add it to the map
+    ovcontainer = new MVMapDecoration(null,null,null,200,150) ;
+    ovcontainer.setCollapsible(true);
+    mapview.addMapDecoration(ovcontainer);
+
+    var over=new MVOverviewMap(ovcontainer.getContainerDiv(),overviewZoom);
+    mapview.addOverviewMap(over)
+
+    // Add a theme-based FOI layer to display customers on the map
+    customers = new MVThemeBasedFOI('customers','spatial.customers');
+    customers.enableInfoWindow(true);
+    customers.setVisible(false);
+    customers.setQueryWindowMultiplier(1);
+    customers.setMinVisibleZoomLevel(minVisibleZoomLevel);
+    customers.setMaxWholeImageLevel(maxWholeImageLevel);
+    customers.setMinClickableZoomLevel(minClickableZoomLevel);
+    mapview.addThemeBasedFOI(customers);
+
+    branches = new MVThemeBasedFOI('branches','spatial.branches');
+    branches.enableInfoWindow(true);
+    branches.setVisible(false);
+    branches.setMinVisibleZoomLevel(minVisibleZoomLevel);
+    branches.setMaxWholeImageLevel(maxWholeImageLevel);
+    branches.setMinClickableZoomLevel(minClickableZoomLevel);
+    mapview.addThemeBasedFOI(branches);
+
+    competitors = new MVThemeBasedFOI('competitors','spatial.competitors');
+    competitors.enableInfoWindow(true);
+    competitors.setVisible(false);
+    competitors.setMinVisibleZoomLevel(minVisibleZoomLevel);
+    competitors.setMaxWholeImageLevel(maxWholeImageLevel);
+    competitors.setMinClickableZoomLevel(minClickableZoomLevel);
+    mapview.addThemeBasedFOI(competitors);
+
+    // Display the map.
+    mapview.enableDragging(true);
+    mapview.enableKeyboardPanning(true);
+    mapview.setDoubleClickAction("zoomin");
+    mapview.display();
+  }
+
+  function toggleMarqueeZoom()
+  {
+    var checkBox = document.getElementById("marqueezoom");
+    if(checkBox.checked)
+      mapview.startMarqueeZoom("continuous");
+    else
+      mapview.stopMarqueeZoom() ;
+  }
+
+  function toggleTheme(checkBox)
+  {
+    theme = mapview.getThemeBasedFOI (checkBox.value);
+    if(checkBox.checked)
+      theme.setVisible(true);
+    else
+      theme.setVisible(false);
+  }
+
+
+</script>
+
+</head>
+<body onLoad="loadMainMap()">
+  <table>
+    <tr>
+      <td valign="top">
+         <div id="DIV_CONTROL">
+         <b>Select themes to display</b>
+         <dl>
+           <dt><input type="checkbox" value="branches"    onclick="toggleTheme(this)" unchecked/>Branches
+           <dt><input type="checkbox" value="customers"   onclick="toggleTheme(this)" unchecked/>Customers
+           <dt><input type="checkbox" value="competitors" onclick="toggleTheme(this)" unchecked/>Competitors
+         </dl>
+         </div>
+       </td>
+      <td valign="top"> <div id="DIV_MAP"> </div> </td>
+    </tr>
+  </table>
+</body>
+</html>

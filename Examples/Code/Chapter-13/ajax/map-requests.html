@@ -1,0 +1,1184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Examples of XML requests</title>
+  <link rel="stylesheet" href="my.css" type="text/css">
+</head>
+<body>
+<h1>Examples of XML requests</h1>
+
+<HR>
+<TABLE cellpadding="5" cellspacing="3" border="0" summary="">
+<TR>
+  <TD> <A HREF="#simple-requests">Simple requests</A></TD>
+  <TD> <A HREF="#simple-requests-map-cache">Using Map caches</A></TD>
+  <TD> <A HREF="#controlling-themes">Controlling themes</A></TD>
+  <TD> <A HREF="#dynamic-themes">Dynamic Themes</A></TD>
+  <TD> <A HREF="#dynamic-features">Dynamic Features</A></TD>
+  <TD> <A HREF="#dynamic-styles">Dynamic Styles</A></TD>
+  <TD> <A HREF="#legends">Legends</A></TD>
+  <TD> <A HREF="#projections">Projections</A></TD>
+  <TD> <A HREF="#georaster">Georaster</A></TD>
+  <TD> <A HREF="#wms">WMS</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<A NAME="simple-requests">
+<H2>Simple Requests</H2>
+<H3>Simple Map Request with streamed output</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Simple Map"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Simple Map Request with XML output</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Simple Map"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_URL"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Simple Map Request using the &lt;box&gt; element</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=12 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Box query"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="400"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;box&gt;
+     &lt;coordinates&gt;-126,33 -114,45&lt;/coordinates&gt;
+  &lt;/box&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Using a ratio scale</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Simple Map"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center scale="10000000"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>No map size</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=8 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Simple Map"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Using a Dynamic Bounding Theme</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_CITY_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;themes&gt;
+    &lt;theme name="ca-branches"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="M.CYAN PIN"
+         jdbc_srid="8307"&gt;
+           select * from branches where state='CALIFORNIA'
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+  &lt;bounding_themes border_margin="0.02"&gt;
+    ca-branches
+  &lt;/bounding_themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Simple Map Request with default scale bar</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=19 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Simple Map"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;scale_bar/&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Simple Map Request with parameterized scale bar</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=27 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Simple Map"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;scale_bar
+    position="SOUTH_WEST"
+    mode="DUAL_MODES"
+    length_hint="200"
+    color1="red"
+    color2="blue"
+    label_color="black"
+    label_halo_size="3.5"
+  /&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<A NAME="simple-requests-map-cache">
+<H2>Using the Map Cache</H2>
+<H3>Using the map cache</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Simple Map"
+  basemap="US_BASE_MAP"
+  use_cached_basemap="TRUE"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Using the map cache with snapping</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Simple Map"
+  basemap="US_BASE_MAP"
+  use_cached_basemap="TRUE"
+  snap_to_cache_scale="TRUE"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="controlling-themes">
+<H2>Controlling Themes</H2>
+<H3>Base Map with Additional Themes</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=22 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Base Map with Additional Themes"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="PARKS.US_PARKS"  /&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES"  /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Base Map with Additional Themes from multiple data sources</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Base Map with Additional Themes"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="PARKS.US_PARKS"
+      datasource="spatial"
+    /&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES"
+      datasource="spatial"
+    /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Map constructed from individual themes</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=25 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="STATES.US_STATES"  /&gt;
+    &lt;theme name="COUNTIES.US_COUNTIES" /&gt;
+    &lt;theme name="RIVERS.US_RIVERS" /&gt;
+    &lt;theme name="PARKS.US_PARKS"  /&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES" /&gt;
+    &lt;theme name="CITIES.US_CITIES" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Map constructed from individual themes with scale control</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="1.5"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-77.0,39.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="STATES.US_STATES" min_scale="10.0" max_scale="5.0" /&gt;
+    &lt;theme name="COUNTIES.US_COUNTIES" min_scale="5.0" max_scale="0.0"/&gt;
+    &lt;theme name="RIVERS.US_RIVERS" min_scale="0.6" max_scale="0.0"/&gt;
+    &lt;theme name="PARKS.US_PARKS" min_scale="2.0" max_scale="0.0"/&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES"  min_scale="2.0" max_scale="0.0"/&gt;
+    &lt;theme name="CITIES.US_CITIES" min_scale="0.15" max_scale="0.0"/&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Thematic map with scale bar</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=27 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=""
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="JPEG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-80.575,37.6525&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;scale_bar
+    position="SOUTH_EAST"
+    mode="US_MODE"
+    color1="red"
+    color2="white"
+    label_halo_size="3.5"
+  /&gt;
+  &lt;themes&gt;
+    &lt;theme name="COUNTIES.US_COUNTIES_POP_DENSITY" /&gt;
+    &lt;theme name="STATES.US_STATE_LINES"  /&gt;
+    &lt;theme name="CITIES.US_CITIES" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="dynamic-themes">
+<H2>Dynamic Themes</H2>
+
+<H3>Map with Templated Theme</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="4"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-104.5, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES"/&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES_TYPE"&gt;
+      &lt;binding_parameters&gt;
+        &lt;parameter value="poor" type="String"/&gt;
+      &lt;/binding_parameters&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Map with Dynamic Theme</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_CITY_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="0.02"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-122.40, 37.79&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="Branches"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="M.CYAN PIN"
+         jdbc_srid="8307"&gt;
+           select * from branches
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Multiple Dynamic Themes</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_CITY_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="0.02"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-122.40, 37.79&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="Competitors"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="M.BUSINESS RED SQUARE"
+         label_column="NAME"
+         label_style="T.BUSINESS NAME RED"
+         jdbc_srid="8307"&gt;
+           select * from competitors
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+    &lt;theme name="Branches"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="M.CYAN PIN"
+         jdbc_srid="8307"&gt;
+           select * from branches
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="dynamic-features">
+<H2>Dynamic Features</H2>
+<H3>Visualize Map center</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=22 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="4"&gt;
+    &lt;geoFeature
+      label="Map center" label_always_on="true"
+      text_style="T.TITLE"
+      render_style="M.CYAN PIN"
+      radius="100000,150000,200000"&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point srsName="SDO:8307"&gt;
+          &lt;coordinates&gt; -82.0,35.0 &lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Polygon Overlay</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="6"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt; -82.0,35.0 &lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;geoFeature
+    label="Query Window"
+    text_style="T.WINDOW_NAME"
+    render_style="C.WINDOW" &gt;
+    &lt;geometricProperty&gt;
+      &lt;Polygon&gt;
+        &lt;outerBoundaryIs&gt;
+          &lt;LinearRing&gt;
+            &lt;coordinates&gt;
+            -84.0,35.0 -83.0,34.0 -81.0,34.0 -80.0,35.0 -80.0,36.0
+            -82.0,37.0 -84.0,35.0
+            &lt;/coordinates&gt;
+          &lt;/LinearRing&gt;
+        &lt;/outerBoundaryIs&gt;
+      &lt;/Polygon&gt;
+    &lt;/geometricProperty&gt;
+  &lt;/geoFeature&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="dynamic-styles">
+<H2>Dynamic Styles</H2>
+<H3>Polygon Overlay Using Dynamic Style</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480" height="400" format="PNG_STREAM"&gt;
+  &lt;center size="6"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt; &lt;coordinates&gt; -82.0,35.0 &lt;/coordinates&gt; &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;geoFeature
+    label="Query Window"
+    text_style="T.WINDOW_NAME"
+    render_style="C.WINDOW" &gt;
+    &lt;geometricProperty&gt;
+      &lt;Polygon&gt;
+        &lt;outerBoundaryIs&gt;
+          &lt;LinearRing&gt;
+            &lt;coordinates&gt;
+            -84.0,35.0 -83.0,34.0 -81.0,34.0 -80.0,35.0 -80.0,36.0
+            -82.0,37.0 -84.0,35.0
+            &lt;/coordinates&gt;
+          &lt;/LinearRing&gt;
+        &lt;/outerBoundaryIs&gt;
+      &lt;/Polygon&gt;
+    &lt;/geometricProperty&gt;
+  &lt;/geoFeature&gt;
+  &lt;styles&gt;
+    &lt;style name="C.WINDOW"&gt;
+      &lt;svg&gt;
+        &lt;g class="color"
+          style="stroke:#00ff00;stroke-width:4;fill:#00ff00;fill-opacity:40"/&gt;
+      &lt;/svg&gt;
+    &lt;/style&gt;
+    &lt;style name="T.WINDOW_NAME"&gt;
+      &lt;svg&gt;
+        &lt;g class="text"
+          style="font-style:plain;font-family:Dialog;font-size:12pt;font-weight:bold;fill:#006666"/&gt;
+      &lt;/svg&gt;
+    &lt;/style&gt;
+  &lt;/styles&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Using Dynamic Image Markers</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_CITY_MAP"
+  datasource="spatial"
+  width="480" height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="0.02"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt; &lt;coordinates&gt;-122.40, 37.79&lt;/coordinates&gt; &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="Branches"&gt;
+       &lt;jdbc_query datasource="spatial"
+         spatial_column="LOCATION" jdbc_srid="8307"
+         render_style="M.BRANCHES"&gt;
+           select * from branches
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+  &lt;styles&gt;
+    &lt;style name="M.BRANCHES"&gt;
+      &lt;svg&gt;
+        &lt;image_marker
+          url="http://127.0.0.1:8888/mapviewer/examples/markers/shape3.jpg"/&gt;
+        &lt;g class="marker" style="width:30;height:30"/&gt;
+      &lt;/svg&gt;
+    &lt;/style&gt;
+  &lt;/styles&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Overriding a static style</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Simple Map"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;styles&gt;
+    &lt;style name="C.FUNNY COLOR"&gt;
+      &lt;svg&gt;
+        &lt;g class="color"
+          style="stroke:#000000;fill:#ffff00;fill-opacity:60"/&gt;
+      &lt;/svg&gt;
+    &lt;/style&gt;
+  &lt;/styles&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Overriding Multiple Styles</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_CITY_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="0.02"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-122.40, 37.79&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="Competitors"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="M.BUSINESS RED SQUARE"
+         label_column="NAME"
+         label_style="T.BUSINESS NAME RED"
+         jdbc_srid="8307"&gt;
+           select * from competitors
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+    &lt;theme name="Branches"&gt;
+       &lt;jdbc_query
+         datasource="spatial"
+         spatial_column="LOCATION"
+         render_style="M.CYAN PIN"
+         jdbc_srid="8307"&gt;
+           select * from branches
+       &lt;/jdbc_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+  &lt;styles&gt;
+    &lt;style name="T.BUSINESS NAME RED"&gt;
+      &lt;svg&gt;
+        &lt;g class="text"
+          style="font-style:plain;font-family:Dialog;font-size:12pt;font-weight:bold;fill:#006666"/&gt;
+      &lt;/svg&gt;
+    &lt;/style&gt;
+    &lt;style name="M.BUSINESS RED SQUARE"&gt;
+      &lt;svg&gt;
+        &lt;image_marker
+          url="http://127.0.0.1:8888/mapviewer/examples/markers/shape1.gif"/&gt;
+        &lt;g class="marker" style="width:15;height:15"/&gt;
+      &lt;/svg&gt;
+    &lt;/style&gt;
+    &lt;style name="M.CYAN PIN"&gt;
+      &lt;svg&gt;
+        &lt;image_marker
+          url="http://127.0.0.1:8888/mapviewer/examples/markers/shape2.png"/&gt;
+        &lt;g class="marker" style="width:15;height:15"/&gt;
+      &lt;/svg&gt;
+    &lt;/style&gt;
+  &lt;/styles&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="legends">
+<H2>Legends</H2>
+<H3>Map with Legend and scale bar</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=32 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title=" "
+  basemap="US_DETAILED_MAP"
+  datasource="spatial"
+  width="480"
+  height="400"
+  format="GIF_STREAM"&gt;
+  &lt;center size="8.0"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-94.0,37.0&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;legend profile="MEDIUM" position="SOUTH_EAST"&gt;
+    &lt;column&gt;
+      &lt;entry text="Map Legend" is_title="true" /&gt;
+      &lt;entry text="Counties"     style="C.FUNNY COLOR" /&gt;
+      &lt;entry text="Rivers"       style="C.RIVER" /&gt;
+      &lt;entry text="Parks"        style="C.PARK FOREST" /&gt;
+    &lt;/column&gt;
+    &lt;column&gt;
+      &lt;entry text="" is_separator="true" /&gt;
+      &lt;entry text="Interstates"  style="L.PH" /&gt;
+      &lt;entry text="Major Cities" style="M.CITY HALL 4" /&gt;
+    &lt;/column&gt;
+  &lt;/legend&gt;
+  &lt;scale_bar
+    position="SOUTH_EAST"
+    mode="US_MODE"
+    color1="red"
+    color2="white"
+    label_halo_size="3.5"
+  /&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="projections">
+<H2>Projections</H2>
+<H3>Simple map projected to SRID 32774 - "Equal-Area Projection (North America)"</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Projected to 32774 - Equal-Area Projection (North America)"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  srid="32774"
+  width="600"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="1400000"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-1800000, 2000000&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Simple map projected to SRID 82218 "UTM Zone 11, Northern Hemisphere (WGS 84)"</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Projected to 82218 - UTM Zone 11, Northern Hemisphere (WGS 84)"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  srid="82218"
+  width="600"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="800000"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;240000, 4320000&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Simple map projected to SRID 82145 "Nevada 2702, Central Zone (1983, meters)"</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Projected to 82145 - Nevada 2702, Central Zone (1983, meters)"
+  basemap="US_BASE_MAP"
+  datasource="spatial"
+  srid="82145"
+  width="600"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="800000"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;500000, 6500000&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Combining multiple themes in different coordinate systems</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Multiple coordinate systems -> WGS84"
+  datasource="spatial"
+  srid="8307"
+  width="480" height="400" format="PNG_STREAM"&gt;
+  &lt;center size="6"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt; &lt;coordinates&gt;-2, 53&lt;/coordinates&gt; &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="COUNTRIES" datasource="WCMC" /&gt;
+    &lt;theme name="UK_COUNTIES" datasource="RASTERS" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Combining multiple themes in different coordinate systems</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=18 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  title="Multiple coordinate systems -> British National Grid"
+  datasource="spatial"
+  srid="81989"
+  width="480" height="400" format="PNG_STREAM"&gt;
+  &lt;center size="666000"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt; &lt;coordinates&gt;400000, 344701&lt;/coordinates&gt; &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="COUNTRIES" datasource="WCMC" /&gt;
+    &lt;theme name="UK_COUNTIES" datasource="RASTERS" /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="georaster">
+<H2>Raster</H2>
+<H3>Georaster Query - single raster</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  datasource = "wcmc"
+  title="Raster map"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="elevation_rivers"&gt;
+      &lt;jdbc_georaster_query
+       jdbc_srid="8307"
+       datasource="wcmc"
+       georaster_table="wcmc_rasters"
+       georaster_column="georaster"
+       asis="true">
+         select georaster from wcmc_rasters where georid=1
+      &lt;/jdbc_georaster_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Georaster Query - multiple tiled rasters</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  datasource = "rasters"
+  title="Tiled Raster map"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="20000"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;422400, 352800&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="UK_raster_map"&gt;
+      &lt;jdbc_georaster_query
+       jdbc_srid="81989"
+       datasource="rasters"
+       georaster_table="uk_rasters"
+       georaster_column="georaster"
+       asis="false">
+         select georaster from uk_rasters where georid between 1 and 27
+      &lt;/jdbc_georaster_query&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Georaster predefined theme with scale bar</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=20 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  datasource="wcmc"
+  title="Raster map - predefined theme"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="RASTER" /&gt;
+  &lt;/themes&gt;
+  &lt;scale_bar
+    position="SOUTH_WEST"
+    mode="DUAL_MODES"
+    color1="red"
+    color2="white"
+    label_halo_size="3.5"
+  /&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Georaster overlayed with vectors (multiple data sources)</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=20 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  datasource="spatial"
+  title="Raster map with vectors"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="12"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;-120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="RASTER" datasource="wcmc" /&gt;
+    &lt;theme name="PARKS.US_PARKS" /&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES"  /&gt;
+    &lt;theme name="STATES.US_STATE_LINES"  /&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Georaster overlayed with vectors - single base map</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=17 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  datasource="WCMC"
+  basemap="WCMC_MAP_RASTER"
+  title="Raster map with vectors"
+  width="480"
+  height="400"
+  format="PNG_STREAM"&gt;
+  &lt;center size="16"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt;120, 39&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="wms">
+<H2>Cascading WMS</H2>
+<H3>USGS Color Shaded Relief</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  datasource = "spatial"
+  width="640"
+  height="480"
+  format="PNG_STREAM"&gt;
+  &lt;center size="20"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt; -71.0, 42.3&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="WMS_theme_1"&gt;
+      &lt;wms_getmap_request isBackgroundTheme="true"&gt;
+        &lt;service_url&gt;
+          http://gisdata.usgs.net:80/servlet/com.esri.wms.Esrimap
+        &lt;/service_url&gt;
+        &lt;version&gt; 1.1.1&lt;/version&gt;
+        &lt;layers&gt;GTOPO60+Color+Shaded+Relief&lt;/layers&gt;
+        &lt;srs&gt; EPSG:4326&lt;/srs&gt;
+        &lt;format&gt; image/png &lt;/format&gt;
+        &lt;transparent&gt; true&lt;/transparent&gt;
+        &lt;bgcolor&gt; 0x000000&lt;/bgcolor&gt;
+        &lt;exceptions&gt; application/vnd.ogc.se_inimage&lt;/exceptions&gt;
+        &lt;vendor_specific_parameters&gt;
+          &lt;vsp&gt;
+            &lt;name&gt; ServiceName &lt;/name&gt;
+            &lt;value&gt; USGS_WMS_GTOPO &lt;/value&gt;
+          &lt;/vsp&gt;
+        &lt;/vendor_specific_parameters&gt;
+      &lt;/wms_getmap_request&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>USGS Color Shaded Relief overlaid with vectors</H3>
+<FORM action=/mapviewer/omserver method=post><TEXTAREA cols=80 rows=24 name=xml_request>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;map_request
+  datasource = "spatial"
+  width="640"
+  height="480"
+  format="PNG_STREAM"&gt;
+  &lt;center size="20"&gt;
+    &lt;geoFeature&gt;
+      &lt;geometricProperty&gt;
+        &lt;Point&gt;
+          &lt;coordinates&gt; -71.0, 42.3&lt;/coordinates&gt;
+        &lt;/Point&gt;
+      &lt;/geometricProperty&gt;
+    &lt;/geoFeature&gt;
+  &lt;/center&gt;
+  &lt;themes&gt;
+    &lt;theme name="PARKS.US_PARKS"  /&gt;
+    &lt;theme name="INTERSTATES.US_INTERSTATES"  /&gt;
+    &lt;theme name="WMS_theme_1"&gt;
+      &lt;wms_getmap_request isBackgroundTheme="true"&gt;
+        &lt;service_url&gt;
+          http://gisdata.usgs.net:80/servlet/com.esri.wms.Esrimap
+        &lt;/service_url&gt;
+        &lt;version&gt; 1.1.1&lt;/version&gt;
+        &lt;layers&gt;GTOPO60+Color+Shaded+Relief&lt;/layers&gt;
+        &lt;srs&gt; EPSG:4326&lt;/srs&gt;
+        &lt;format&gt; image/png &lt;/format&gt;
+        &lt;transparent&gt; true&lt;/transparent&gt;
+        &lt;bgcolor&gt; 0x000000&lt;/bgcolor&gt;
+        &lt;exceptions&gt; application/vnd.ogc.se_inimage&lt;/exceptions&gt;
+        &lt;vendor_specific_parameters&gt;
+          &lt;vsp&gt;
+            &lt;name&gt; ServiceName &lt;/name&gt;
+            &lt;value&gt; USGS_WMS_GTOPO &lt;/value&gt;
+          &lt;/vsp&gt;
+        &lt;/vendor_specific_parameters&gt;
+      &lt;/wms_getmap_request&gt;
+    &lt;/theme&gt;
+  &lt;/themes&gt;
+&lt;/map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<TABLE cellpadding="5" cellspacing="3" border="0" summary="">
+<TR>
+  <TD> <A HREF="#simple-requests">Simple requests</A></TD>
+  <TD> <A HREF="#simple-requests-map-cache">Using Map caches</A></TD>
+  <TD> <A HREF="#controlling-themes">Controlling themes</A></TD>
+  <TD> <A HREF="#dynamic-themes">Dynamic Themes</A></TD>
+  <TD> <A HREF="#dynamic-features">Dynamic Features</A></TD>
+  <TD> <A HREF="#dynamic-styles">Dynamic Styles</A></TD>
+  <TD> <A HREF="#legends">Legends</A></TD>
+  <TD> <A HREF="#projections">Projections</A></TD>
+  <TD> <A HREF="#georaster">Georaster</A></TD>
+  <TD> <A HREF="#wms">WMS</A></TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

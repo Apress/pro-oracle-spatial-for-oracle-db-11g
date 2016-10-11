@@ -1,0 +1,8 @@
+-- Listing 6-3. Using the GEOCODE_AS_GEOMETRY Function
+SELECT SDO_GCDR.GEOCODE_AS_GEOMETRY
+(
+  'SPATIAL',
+  SDO_KEYWORDARRAY('1250 Clay Street', 'San Francisco, CA'),
+  'US'
+)
+FROM DUAL;

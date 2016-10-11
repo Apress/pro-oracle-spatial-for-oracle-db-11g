@@ -1,0 +1,32 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Simple Free-Scrolling Map</title>
+<script language="Javascript" src="/mapviewer/fsmc/jslib/oraclemaps.js"></script>
+<script language="JavaScript">
+  function loadMainMap()
+  {
+    // Setup the connection to MapViewer
+    var baseURL       = "http://"+document.location.host+"/mapviewer";
+    var mapview = new MVMapView(document.getElementById("map_div"), baseURL);
+
+    // Add a base map
+    mapview.addBaseMapLayer(new MVBaseMap("SPATIAL.US_DETAILED_MAP"));
+
+    // Setup initial map center and zoom level
+    var center  = MVSdoGeometry.createPoint(-122.5, 37.7, 8307);
+    mapview.setCenter(center);
+    mapview.setZoomLevel(9);
+
+    // Display the map
+    mapview.display();
+  }
+</script>
+
+</head>
+<body onload="loadMainMap()">
+<div id="map_div"
+   style="left:0px; top:0px; width:100%; height:100%; border:2px solid">
+</div>
+</body>
+</html>

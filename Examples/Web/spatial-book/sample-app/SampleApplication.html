@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+  <META http-equiv="Content-Type" content="text/html;">
+  <title>Pro Oracle Spatial for Oracle Database 11g - Sample Ajax Application</title>
+  <link rel="stylesheet" href="SampleApplication.css" type="text/css">
+  <script language="Javascript" src="/mapviewer/fsmc/jslib/oraclemaps.js"></script>
+  <script language="JavaScript" src="SampleApplication.js"> </script>
+</head>
+<body onLoad="loadMainMap(0);" style="width:100%;">
+  <table>
+    <tr>
+      <td valign="top">
+        <div id="PANEL_CONTROL">
+        <form name="controlPanel">
+          <b>Select Themes</b>
+          <dl id="THEMES_LIST"></dl>
+          <b>Select:</b>&nbsp;<a href="javascript:toggleAllThemes(true)" >All</a>&nbsp;<A href="javascript:toggleAllThemes(false)" >None</A>
+          <p><input type="checkbox" name="autoRefresh" onclick="toggleAutoRefresh(this);">Auto Refresh
+          <br><input type=button onclick="refreshAllThemes();" value="Refresh">
+          <p><b>Enter Address</b>
+          <br><input type="text" id="address" size="24"/>
+          <br><input type=button onclick="geocodeAddress();" value="Go">
+          <p><b>Direct Links</b>
+          <dl id="DIRECT_LINKS"></dl>
+        </form>
+        </div>
+      </td>
+      <td valign="top">
+        <table>
+          <tr><td valign="top"> <div id="PANEL_MAP"> </div> </td></tr>
+          <tr><td valign="top"> <div id="PANEL_STATUS" > </div> </td> </tr>
+        </table>
+      </td>
+      <td valign="top">
+        <table>
+          <tr>
+          <tr><td valign="top"> <div id="PANEL_INFO" > </div> </td> </tr>
+            <td valign="top">
+              <div id="PANEL_SEARCH_CONTROL">
+                <a href="javascript:showSearch(false)">Show All</a>&nbsp;&nbsp;
+                <a href="javascript:showSearch(true)">Show Search Results</a>&nbsp;&nbsp;
+                <a href="javascript:clearSearch()">Clear Results</a>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

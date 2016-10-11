@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Drawing and Searching</title>
+<link rel="stylesheet" href="ajax-app.css" type="text/css">
+<script language="Javascript" src="/mapviewer/fsmc/jslib/oraclemaps.js"></script>
+<script language="JavaScript">
+  var mapview;
+  var baseURL       =  "http://"+document.location.host+"/mapviewer";
+  var mapSRID       = 8307;
+  var mapCenterX    = -122.40;
+  var mapCenterY    = 37.79;
+  var mapZoom       = 16;
+  var overviewZoom  = 7;
+  var circleTool;
+  var rectangleTool;
+  var redlineTool;
+  var selectedObjects = null;
+
+  function loadMainMap()
+  {
+
+    // Create an MVMapView instance to display the map
+    mapview = new MVMapView(document.getElementById("DIV_MAP"), baseURL);
+
+    // Add a base map layer as background.
+    var basemap = new MVBaseMap("spatial.us_city_map");
+    mapview.addBaseMapLayer(basemap);
+
+    // Set the initial map center and zoom level
+    var center=MVSdoGeometry.createPoint(mapCenterX, mapCenterY, mapSRID);
+    mapview.setCenter(center);
+    mapview.setZoomLevel(mapZoom);
+
+    // Add a navigation panel on the left side of the map
+    mapview.setHomeMap(center, mapZoom);
+    mapview.addNavigationPanel("east");
+
+   // Add a scale bar
+    mapview.addScaleBar();
+
+    // Add a copyright notice
+    mapview.addCopyRightNote("Powered by Oracle");
+
+    // Add a marquee zoom control
+    var toolBar =
+      '<div style="background-color:white; border:2px solid black;">'+
+      '&nbsp<b>Marquee Zoom:&nbsp</b>'+
+      '<input id="marqueezoom" type="checkbox" value="marqueezoom" onclick="toggleMarqueeZoom(this)" unchecked/>'+
+      '</div>'
+    md = new MVMapDecoration(toolBar, 0, 0) ;
+    mapview.addMapDecoration(md);
+
+    // Setup an overview map as a collapsible decoration and add it to the map
+    ovcontainer = new MVMapDecoration(null,null,null,200,150) ;
+    ovcontainer.setCollapsible(true);
+    mapview.addMapDecoration(ovcontainer);
+
+    var over=new MVOverviewMap(ovcontainer.getContainerDiv(),overviewZoom);
+    mapview.addOverviewMap(over)
+
+    // Add a theme-based FOI layer to display customers on the map
+    customers = new MVThemeBasedFOI('customers','spatial.customers');
+    customers.setBringToTopOnMouseOver(true);
+    customers.enableInfoWindow(true);
+    customers.setVisible(false);
+    customers.setQueryWindowMultiplier(1);
+    mapview.addThemeBasedFOI(customers);
+
+    // Add a theme-based FOI layer to display branches on the map
+    branches = new MVThemeBasedFOI('branches','spatial.branches');
+    branches.setBringToTopOnMouseOver(true);
+    branches.enableInfoWindow(true);
+    branches.setVisible(false);
+    mapview.addThemeBasedFOI(branches);
+
+    // Add a theme-based FOI layer to display competitors on the map
+    competitors = new MVThemeBasedFOI('competitors','spatial.competitors');
+    competitors.setBringToTopOnMouseOver(true);
+    competitors.enableInfoWindow(true);
+    competitors.setVisible(false);
+    mapview.addThemeBasedFOI(competitors);
+
+    // Display the map.
+    mapview.enableDragging(true);
+    mapview.enableKeyboardPanning(true);
+    mapview.setDoubleClickAction("zoomin");
+    mapview.display();
+  }
+
+  function toggleMarqueeZoom(checkBox)
+  {
+    if(checkBox.checked)
+      mapview.startMarqueeZoom("continuous");
+    else
+      mapview.stopMarqueeZoom() ;
+  }
+
+  function toggleTheme(checkBox)
+  {
+    theme = mapview.getThemeBasedFOI (checkBox.value);
+    if(checkBox.checked)
+      theme.setVisible(true);
+    else
+      theme.setVisible(false);
+  }
+
+  function drawShape()
+  {
+    if (document.getElementById("draw_circle").checked)
+      drawCircle();
+    if (document.getElementById("draw_rectangle").checked)
+      drawRectangle();
+    if (document.getElementById("draw_redline").checked)
+      drawRedline();
+  }
+
+  function showSelection()
+  {
+    if (document.getElementById("draw_circle").checked)
+      selectCircle();
+    if (document.getElementById("draw_rectangle").checked)
+      selectRectangle();
+    if (document.getElementById("draw_redline").checked)
+      selectRedline();
+  }
+
+  function clearSelection()
+  {
+    if (document.getElementById("draw_circle").checked) {
+      circleTool.clear();
+      document.getElementById("draw_circle").checked = false;
+    }
+    if (document.getElementById("draw_rectangle").checked) {
+      rectangleTool.clear();
+      document.getElementById("draw_rectangle").checked = false;
+    }
+    if (document.getElementById("draw_redline").checked) {
+      redlineTool.clear();
+      document.getElementById("draw_redline").checked = false;
+    }
+    if (selectedObjects)
+      mapview.removeThemeBasedFOI(selectedObjects);
+  }
+
+  function drawCircle()
+  {
+    // Create the circle tool
+    circleTool = new MVCircleTool("SPATIAL.DRAWING_LINE");
+    // Add it to the wiew
+    mapview.addCircleTool(circleTool);
+    // Start drawing
+    circleTool.init();
+  }
+
+  function drawRectangle()
+  {
+    // Create the rectangle tool
+    rectangleTool = new MVRectangleTool("SPATIAL.DRAWING_LINE");
+    // Add it to the wiew
+    mapview.addRectangleTool(rectangleTool);
+    // Start drawing
+    rectangleTool.init();
+  }
+
+  function drawRedline()
+  {
+    // Create the redline tool
+    redlineTool = new MVRedlineTool("SPATIAL.DRAWING_LINE","SPATIAL.DRAWING_AREA" );
+    // Add it to the wiew
+    mapview.addRedLineTool(redlineTool);
+    // Start drawing
+    redlineTool.init();
+  }
+
+  function selectCircle()
+  {
+    // Get the radius of the circle
+    circleRadius = circleTool.getRadius("meter");
+    // Get the center of the circel
+    circleCenter = circleTool.getCenter();
+    // Get the geometry of the circle
+    circleGeom = circleTool.getCircle();
+    // Get the FOI for the circle
+    circleFOI = circleTool.getCircleFOI();
+    circleFOI.enableInfoTip();
+    circleFOI.setClickable();
+    circleFOI.setInfoTip("My Circle");
+    circleFOI.setInfoWindow (
+      "<b>Center</b>" + circleGeom.getPointX() +"," + circleGeom.getPointY() + "<p>" +
+      "<b>Radius</b>" + circleRadius + "<p>" +
+      "<b>Geometry</b>" + circleGeom + "<p>"
+    );
+    circleFOI.setRenderingStyle("SPATIAL.DRAWING_AREA");
+    circleFOI.reDraw();
+    // Search for objects in circle
+    selectGeometry(circleGeom);
+  }
+
+  function selectRectangle()
+  {
+    // Get the height of the rectangle
+    rectangleHeight = rectangleTool.getHeight("meter");
+    // Get the width of the rectangle
+    rectangleWidth = rectangleTool.getWidth("meter");
+    // Get the geometry of the rectangle
+    rectangleGeom = rectangleTool.getRectangle();
+    // Get the FOI for the circle
+    rectangleFOI = rectangleTool.getRectangleFOI();
+    rectangleFOI.enableInfoTip();
+    rectangleFOI.setClickable();
+    rectangleFOI.setInfoTip("My rectangle");
+    rectangleFOI.setInfoWindow (
+      "<b>Area</b>" + rectangleGeom.getArea() + "<p>" +
+      "<b>Length</b>" + rectangleGeom.getLength() + "<p>" +
+      "<b>Geometry</b>" + rectangleGeom + "<p>"
+    );
+    rectangleFOI.setRenderingStyle("SPATIAL.DRAWING_AREA");
+    rectangleFOI.reDraw();
+    // Search for objects in rectangle
+    selectGeometry(rectangleGeom);
+  }
+
+  function selectRedline()
+  {
+    // Generate the area for the polygon just drawn
+    redlineTool.generateArea();
+    // Get the geometry of the polygon
+    redlineGeom = redlineTool.getPolygon();
+    // Get the FOI for the polygon
+    polygonFOI = redlineTool.getPolygonFOI();
+    polygonFOI.enableInfoTip();
+    polygonFOI.setClickable();
+    polygonFOI.setInfoTip("My polygon");
+    polygonFOI.setInfoWindow (
+      "<b>Area</b>" + redlineGeom.getArea() + "<p>" +
+      "<b>Length</b>" + redlineGeom.getLength() + "<p>" +
+      "<b>Geometry</b>" + redlineGeom + "<p>"
+    );
+    // Search for objects in polygon
+    selectGeometry(redlineGeom);
+  }
+
+  function selectGeometry (areaGeom)
+  {
+    // Add a "highlight" theme to isolate the objects in the area
+    if (document.getElementById("select_branches").checked)
+      selectedObjects = new MVThemeBasedFOI('selected_objects','spatial.branches');
+    if (document.getElementById("select_customers").checked)
+      selectedObjects = new MVThemeBasedFOI('selected_objects','spatial.customers');
+    if (document.getElementById("select_competitors").checked)
+      selectedObjects = new MVThemeBasedFOI('selected_objects','spatial.competitors');
+    selectedObjects.setBringToTopOnMouseOver(true);
+
+    // Make this a "highlight-only" theme
+    selectedObjects.setHighlightOnly(true);
+
+    // Add the filtering geometry
+    selectedObjects.setFilteringGeom(areaGeom);
+
+    // Apply a rendering style
+    selectedObjects.setRenderingStyle("M.CYAN PIN");
+
+    // Add theme to the map view
+    mapview.addThemeBasedFOI(selectedObjects);
+  }
+
+</script>
+
+</head>
+<body onLoad="loadMainMap()">
+  <table>
+    <tr>
+      <td valign="top">
+         <div id="DIV_CONTROL">
+         <b>Select Themes to Display</b>
+         <dl>
+           <dt><input type="checkbox" value="branches"    onclick="toggleTheme(this)" unchecked/>Branches
+           <dt><input type="checkbox" value="customers"   onclick="toggleTheme(this)" unchecked/>Customers
+           <dt><input type="checkbox" value="competitors" onclick="toggleTheme(this)" unchecked/>Competitors
+         </dl>
+         <b>Select Shape to Draw</b>
+         <dl>
+           <dt><input type="radio" id="draw_circle"       name="draw_shape_type" value="circle"    onclick="drawShape()"    unchecked/>Circle
+           <dt><input type="radio" id="draw_rectangle"    name="draw_shape_type" value="rectangle" onclick="drawShape()" unchecked/>Rectangle
+           <dt><input type="radio" id="draw_redline"      name="draw_shape_type" value="redline"   onclick="drawShape()"   unchecked/>Any (redline)
+         </dl>
+         <b>Select Themes to Search</b>
+         <dl>
+           <dt><input type="radio" id="select_branches"    name="select_object" value="branches"    unchecked/>Branches
+           <dt><input type="radio" id="select_customers"   name="select_object" value="customers"   unchecked/>Customers
+           <dt><input type="radio" id="select_competitors" name="select_object" value="competitors" unchecked/>Competitors
+         </dl>
+         <b>Perform Search</b>
+         <dl>
+           <dt><input id="select_shape"   type="button" value="Show Selection"  onclick="showSelection();" >
+           <dt><input id="clear_shape"    type="button" value="Clear Selection" onclick="clearSelection();" >
+         </dl>
+         </div>
+       </td>
+      <td valign="top"> <div id="DIV_MAP"> </div> </td>
+    </tr>
+  </table>
+</body>
+</html>

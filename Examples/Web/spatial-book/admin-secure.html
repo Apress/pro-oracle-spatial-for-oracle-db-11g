@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Mapviewer administration API (secure)</title>
+  <link rel="stylesheet" href="my.css" type="text/css">
+</head>
+<body>
+<h1>Mapviewer administration API (secure)</h1>
+
+<HR>
+<TABLE cellpadding="5" cellspacing="3" border="0" summary="">
+<TR>
+  <TD> <A HREF="#mgr_datasource">datasources</A></TD>
+  <TD> <A HREF="#mgr_cache">caches</A></TD>
+  <TD> <A HREF="#mgr_econfig">config</A></TD>
+  <TD> <A HREF="#mgr_restart">restart</A></TD>
+</TR>
+</TABLE>
+<HR>
+
+<A NAME="mgr_datasource">
+<H2>Managing Map Data Sources</H2>
+
+<H3>Add a data source:</H3>
+<FORM action=/mapviewer/mapadmin method=post>
+<TEXTAREA cols=70 name=xml_request rows=12>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;add_data_source
+        name="spatial"
+        jdbc_host="foo.us.oracle.com"
+        jdbc_port="1521"
+        jdbc_sid="orcl"
+        jdbc_user="scott"
+        jdbc_password="tiger"
+        jdbc_mode="thin"
+        number_of_mappers="3" /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>List data sources:</H3>
+<FORM action=/mapviewer/mapadmin method=post>
+<TEXTAREA cols=70 name=xml_request rows=4>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;list_data_sources /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Data source exists:</H3>
+<FORM action=/mapviewer/omserver method=post>
+<TEXTAREA cols=70 name=xml_request rows=4>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;data_source_exists data_source="spatial"/&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Redefine a data source:</H3>
+<FORM action=/mapviewer/mapadmin method=post>
+<TEXTAREA cols=70 name=xml_request rows=12>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;redefine_data_source
+        name="spatial"
+        jdbc_host="foo.us.oracle.com"
+        jdbc_port="1521"
+        jdbc_sid="orcl"
+        jdbc_user="scott"
+        jdbc_password="tiger"
+        jdbc_mode="thin"
+        number_of_mappers="5" /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Remove a data source:</H3>
+<FORM action=/mapviewer/mapadmin method=post>
+<TEXTAREA cols=70 name=xml_request rows=4>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;remove_data_source data_source="spatial" jdbc_password="tiger" /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="mgr_cache">
+<H2> Managing caches </H2></FONT>
+
+<H3>Clear cached style/theme/basemap definitions in a data source:</H3>
+<FORM action=/mapviewer/mapadmin method=post>
+<TEXTAREA cols=70 name=xml_request rows=4>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;clear_cache data_source="spatial"/&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<H3>Clear cached data of a predefined theme:</H3>
+<FORM action=/mapviewer/mapadmin method=post>
+<TEXTAREA cols=70 name=xml_request rows=4>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;clear_theme_cache data_source="spatial" theme="MY_THEME" /&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA> <BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="mgr_econfig">
+<H2> Editing MapViewer config file </H2>
+
+<H3>Edit this MapViewer server's config file (mapViewerConfig.xml):</H3>
+<FORM action=/mapviewer/mapadmin method=post>
+<TEXTAREA cols=70 name=xml_request rows=4>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;edit_config_file/&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA>
+<BR><INPUT type=submit value=Submit> </FORM>
+
+<HR>
+<A NAME="mgr_restart">
+<H2> Restarting MapViewer </H2>
+
+<H3>Use the following form to restart this MapViewer server* :</H3>
+<FORM action=/mapviewer/mapadmin method=post>
+<TEXTAREA cols=70 name=xml_request rows=4>&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;non_map_request&gt;
+  &lt;restart/&gt;
+&lt;/non_map_request&gt;
+</TEXTAREA>
+<BR><INPUT type=submit value=Submit> </FORM>
+<FONT size="-1"> * The mapViewerConfig.xml file will be reloaded.
+
+
+<p>
+<HR>
+<TABLE cellpadding="5" cellspacing="3" border="0" summary="">
+<TR>
+<TD bgcolor="#FFFFFF"> <A HREF="#mgr_datasource"> datasources</A> </TD>
+<TD bgcolor="#FFFFCC"> <A HREF="#mgr_cache">caches</A> </TD>
+<TD bgcolor="#FFFFFF"> <A HREF="#mgr_econfig">config</A></TD>
+<TD bgcolor="#FFFFCC"> <A HREF="#mgr_restart">restart</A></TD>
+<!-- <TD bgcolor="#FFFFFF"> <A HREF="/mapviewer/mvpindex.jsp">Portlet</TD> -->
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>

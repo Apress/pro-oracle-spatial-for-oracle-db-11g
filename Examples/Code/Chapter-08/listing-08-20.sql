@@ -1,0 +1,7 @@
+-- Listing 8-20. SDO_WITHIN_DISTANCE Operator Retrieving All Customers Within a Quarter-Mile Radius
+-- of a Competitor Store
+SELECT ct.id, ct.name
+FROM competitors comp, customers ct
+WHERE comp.id=1
+AND SDO_WITHIN_DISTANCE
+(ct.location, comp.location, 'DISTANCE=0.25 UNIT=MILE ' )='TRUE' ORDER BY ct.id;
